@@ -38,33 +38,54 @@
             <el-input v-model="mobilesuitupdata.ID" placeholder="请输入id" @change="restnow(mobilesuitupdata)" clearable></el-input>
           </div>
         </el-form-item>
+        <el-form-item label="Skill">
+          <el-input v-model="mobilesuitupdata.Skill" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="Lv">
+          <el-input v-model="mobilesuitupdata.Lv" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="Exp">
+          <el-input v-model="mobilesuitupdata.Exp" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="場數">
+          <el-input v-model="mobilesuitupdata.Sess" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="Charge">
+          <el-input v-model="mobilesuitupdata.Charge" clearable></el-input>
+        </el-form-item>
+
         <el-form-item label="涂装1">
-          <el-color-picker v-model="msinform.color1" clearable></el-color-picker>
+          <el-color-picker v-model="mobilesuitupdata.Color[0]" clearable></el-color-picker>
         </el-form-item>
         <el-form-item label="涂装2">
-          <el-color-picker v-model="msinform.color2" clearable></el-color-picker>
+          <el-color-picker v-model="mobilesuitupdata.Color[1]" clearable></el-color-picker>
         </el-form-item>
         <el-form-item label="涂装3">
-          <el-color-picker v-model="msinform.color3" clearable></el-color-picker>
+          <el-color-picker v-model="mobilesuitupdata.Color[2]" clearable></el-color-picker>
         </el-form-item>
         <el-form-item label="涂装4">
-          <el-color-picker v-model="msinform.color4" clearable></el-color-picker>
+          <el-color-picker v-model="mobilesuitupdata.Color[3]" clearable></el-color-picker>
         </el-form-item>
         <el-form-item label="涂装5">
-          <el-color-picker v-model="msinform.color5" clearable></el-color-picker>
+          <el-color-picker v-model="mobilesuitupdata.Color[4]" clearable></el-color-picker>
         </el-form-item>
         <el-form-item label="涂装6">
-          <el-color-picker v-model="msinform.color6" clearable></el-color-picker>
+          <el-color-picker v-model="mobilesuitupdata.Color[5]" clearable></el-color-picker>
         </el-form-item>
-        <!--<el-form-item label="纹章1">
-          <el-input v-model="mobilesuitupdata.emblem1" clearable></el-input>
+
+        <el-form-item label="拋光">
+          <el-input v-model="mobilesuitupdata.Polish" clearable></el-input>
+        </el-form-item>
+
+        <el-form-item label="纹章1">
+          <el-input v-model="mobilesuitupdata.Coat[0]" clearable></el-input>
         </el-form-item>
         <el-form-item label="纹章2">
-          <el-input v-model="mobilesuitupdata.emblem2" clearable></el-input>
+          <el-input v-model="mobilesuitupdata.Coat[1]" clearable></el-input>
         </el-form-item>
         <el-form-item label="纹章3">
-          <el-input v-model="mobilesuitupdata.emblem3" clearable></el-input>
-        </el-form-item>-->
+          <el-input v-model="mobilesuitupdata.Coat[2]" clearable></el-input>
+        </el-form-item>
       </el-form>
       <el-row>
         <el-col :span="22" align="end" :offset="1">
@@ -98,7 +119,10 @@
         titleName: "修改",
         openShow: false,
         mobilesuitShow: false,
-        mobilesuitupdata: {},
+        mobilesuitupdata: {
+          Color: [0, 0, 0, 0, 0, 0],
+          Coat: [0, 0, 0],
+        },
         searchdata: {
         },
         adddata: {},
@@ -133,13 +157,7 @@
       restnow(item) {
         this.mobilesuitShow = true;
         this.mobilesuitupdata = item;
-        var mycolor = JSON.parse(JSON.stringify(item.Color))
-        this.msinform.color1 = '#' + mycolor[0];
-        this.msinform.color2 = '#' + mycolor[1];
-        this.msinform.color3 = '#' + mycolor[2];
-        this.msinform.color4 = '#' + mycolor[3];
-        this.msinform.color5 = '#' + mycolor[4];
-        this.msinform.color6 = '#' + mycolor[5];
+        this.mobilesuitupdata.Color = this.json2color(item.Color)
         this.selectms = "{}";
         if(item) {
           for(let i = 0; i < this.gundamlist.length; i++) {
@@ -175,23 +193,23 @@
           this.gundamlist = data.list
         });
       },
-      colortrans(colorcode) {
-        var mycolors = "";
-        if(colorcode) {
-          mycolors = colorcode.split("#")[1];
+      json2color(colorlist) {
+        var out = [];
+        for(var i = 0; i < colorlist.length; i++) {
+          out.push('#' + colorlist[i]);
         }
-        let a = parseInt(mycolors, 16)
-        let r = (((a & 0xff0000) >> 16) >> 3) << 10;
-        let g = (((a & 0xff00) >> 8) >> 3) << 5;
-        let b = (((a & 0xff)) >> 3);
-        let ret = (r + g + b).toString(16);
-        let lengths = ret.length;
-        if(lengths < 4) {
-          for(let i = 0; i < 4 - lengths; i++) {
-            ret = "0" + ret;
+        return out
+      },
+      color2json(colorlist) {
+        var out = [];
+        for(var i = 0; i < colorlist.length; i++) {
+          if(colorlist[i] == null) {
+            out.push('0');
+          } else {
+            out.push(colorlist[i].split("#")[1]);
           }
         }
-        return "" + ret.charAt(2) + ret.charAt(3) + ret.charAt(0) + ret.charAt(1)
+        return out
       },
       colortrans2(colorcode) {
         var mycolors = "";
@@ -201,13 +219,7 @@
         return mycolors;
       },
       mobileupdata() {
-        this.mobilesuitupdata.Color = [];
-        this.mobilesuitupdata.Color.push(this.colortrans2(this.msinform.color1));
-        this.mobilesuitupdata.Color.push(this.colortrans2(this.msinform.color2));
-        this.mobilesuitupdata.Color.push(this.colortrans2(this.msinform.color3));
-        this.mobilesuitupdata.Color.push(this.colortrans2(this.msinform.color4));
-        this.mobilesuitupdata.Color.push(this.colortrans2(this.msinform.color5));
-        this.mobilesuitupdata.Color.push(this.colortrans2(this.msinform.color6));
+        this.mobilesuitupdata.Color = this.color2json(this.mobilesuitupdata.Color);
         this.$http({
           url: this.$http.adornUrl("api/bot"),
           method: 'POST',

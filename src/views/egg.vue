@@ -3,7 +3,7 @@
     <div style="padding-right: 12px;padding-left: 6px;">
       <el-row :gutter="20">
         <el-col :span="24">
-          <el-button type="primary" size="small" @click="getms">抽蛋</el-button>
+          <!--<el-button type="primary" size="small" @click="getms">抽蛋</el-button>-->
           <el-table :data="mobilesuitupdatalist.list" style="width: 100%;text-align: center;">
             <el-table-column prop="ID" label="代码">
             </el-table-column>
